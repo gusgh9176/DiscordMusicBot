@@ -1,13 +1,10 @@
 package com.example;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.listner.MyListener;
+
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class ExampleTest {
     public static void main(String[] args) {
@@ -17,7 +14,7 @@ public class ExampleTest {
                     System.out.println("Loaded " + event.getServer().getName());
                 })
                 .addListener(new MyListener())
-                .setToken("NzkyNjI0ODg2ODcwODM1MjMw.X-gbcw.0qQLydTwc6XrNH1Dbfkw3BAmfMA")
+                .setToken("Token")
                 .login()
                 .join();
 
@@ -26,7 +23,6 @@ public class ExampleTest {
 
         // Invite bot url
         System.out.println("You can invite the bot by using the following url: " + api.createBotInvite());
-
 //        System.out.println("메인 API " + api);
     }
 }
