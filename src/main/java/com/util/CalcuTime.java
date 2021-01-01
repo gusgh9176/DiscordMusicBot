@@ -5,9 +5,11 @@ import java.text.SimpleDateFormat;
 
 public class CalcuTime {
 
+    //
     // 3001 -> [00:50:01], 3665 -> [01:01:05]
-    public static String se2Time(Long second){
-        SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+    public static String se2Time(Long microSecond){
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        Long second = microSecond / 1000;
         Long hour = second / 3600;
         Long minute = (second - (hour * 3600)) / 60;
         Long otherSecond = second - (hour * 3600) - (minute * 60);

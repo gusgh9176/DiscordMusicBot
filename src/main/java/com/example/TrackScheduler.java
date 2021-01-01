@@ -4,19 +4,23 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import org.javacord.api.audio.AudioConnection;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackScheduler extends AudioEventAdapter {
     private final AudioPlayer player;
+    private final AudioConnection audioConnection;
     private final BlockingQueue<AudioTrack> queue;
 
     /**
      * @param player The audio player this scheduler uses
+     * @param audioConnection The audioConnection this scheduler uses connection channel
      */
-    public TrackScheduler(AudioPlayer player) {
+    public TrackScheduler(AudioPlayer player, AudioConnection audioConnection) {
         this.player = player;
+        this.audioConnection = audioConnection;
         this.queue = new LinkedBlockingQueue<>();
     }
 
@@ -40,12 +44,28 @@ public class TrackScheduler extends AudioEventAdapter {
     public void nextTrack() {
         // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
         // giving null to startTrack, which is a valid argument and will simply stop the player.
-        player.startTrack(queue.poll(), false);
+        if(queue.peek() == null){
+            exitVoiceChannel();
+        }
+        else{
+            player.startTrack(queue.poll(), false);
+        }
+    }
+
+    /**
+     * clear player, queue
+     * exit audio channel
+     */
+    public void exitVoiceChannel(){
+        player.destroy();
+        queue.clear();
+        audioConnection.close();
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
+        // LOAD_FAILED -> exit Voice Channel
         if (endReason.mayStartNext) {
             nextTrack();
         }

@@ -14,20 +14,26 @@ import java.awt.*;
 
 public class AudioResultHandler implements AudioLoadResultHandler {
 
-    MessageAuthor messageAuthor;
-    TextChannel textChannel;
-    TrackScheduler trackScheduler;
-    EmbedBuilder embed;
+    private MessageAuthor messageAuthor;
+    private TextChannel textChannel;
+    private TrackScheduler trackScheduler;
+    private AudioPlaylist audioPlaylist;
 
     public AudioResultHandler(MessageAuthor messageAuthor, TextChannel textChannel, TrackScheduler trackScheduler){
         this.messageAuthor = messageAuthor;
         this.textChannel = textChannel;
         this.trackScheduler = trackScheduler;
-        // Set embed 1
-        embed = new EmbedBuilder()
+    }
+
+    public void offerQueue(int num){
+        AudioTrack audioTrack = audioPlaylist.getTracks().get(num);
+        trackScheduler.queue(audioTrack);
+        EmbedBuilder embed = new EmbedBuilder()
                 .setTitle("Play Music")
-                .setDescription("Music List")
-                .setAuthor(messageAuthor);
+                .setDescription("노래 정보")
+                .setAuthor(this.messageAuthor)
+                .addField(audioTrack.getInfo().title, CalcuTime.se2Time(audioTrack.getInfo().length) + audioTrack.getInfo().uri, false);
+        textChannel.sendMessage(embed);
     }
 
     // Search Result = 1
@@ -39,18 +45,24 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     // Search Result > 1, max = 19
     @Override
     public void playlistLoaded(AudioPlaylist playlist) {
+        audioPlaylist = playlist;
         // Set embed 2
-        embed.setColor(Color.RED);
+        EmbedBuilder embed = new EmbedBuilder()
+                .setTitle("Play Music")
+                .setDescription("Music List")
+                .setAuthor(this.messageAuthor)
+                .setColor(Color.RED);
 
-        for (AudioTrack track : playlist.getTracks()) {
+        int i = 1;
+        for (AudioTrack track : audioPlaylist.getTracks()) {
             // Get track information
             AudioTrackInfo audioTrackInfo = track.getInfo();
             // title
             // [hh:mm:ss] + https ~
-            embed.addField(audioTrackInfo.title, CalcuTime.se2Time(audioTrackInfo.length) + audioTrackInfo.uri, false);
+            String num = "[" + i +"번]";
+            embed.addField(num + " " + audioTrackInfo.title, CalcuTime.se2Time(audioTrackInfo.length) + audioTrackInfo.uri, false);
+            i = i + 1;
         }
-        // add queue if queue == 0, play music if queue > 0
-        trackScheduler.queue(playlist.getTracks().get(0));
 
         textChannel.sendMessage(embed);
     }
