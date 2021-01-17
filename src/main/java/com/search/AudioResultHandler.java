@@ -1,11 +1,12 @@
-package com.example;
+package com.search;
 
+import com.audio.TrackScheduler;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import com.util.CalcuTime;
+import com.util.ParseTime;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
@@ -14,9 +15,9 @@ import java.awt.*;
 
 public class AudioResultHandler implements AudioLoadResultHandler {
 
-    private MessageAuthor messageAuthor;
-    private TextChannel textChannel;
-    private TrackScheduler trackScheduler;
+    private final MessageAuthor messageAuthor;
+    private final TextChannel textChannel;
+    private final TrackScheduler trackScheduler;
     private AudioPlaylist audioPlaylist;
 
     public AudioResultHandler(MessageAuthor messageAuthor, TextChannel textChannel, TrackScheduler trackScheduler){
@@ -32,7 +33,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                 .setTitle("Play Music")
                 .setDescription("노래 정보")
                 .setAuthor(this.messageAuthor)
-                .addField(audioTrack.getInfo().title, CalcuTime.se2Time(audioTrack.getInfo().length) + audioTrack.getInfo().uri, false);
+                .addField(audioTrack.getInfo().title, ParseTime.se2Time(audioTrack.getInfo().length) + audioTrack.getInfo().uri, false);
         textChannel.sendMessage(embed);
     }
 
@@ -60,7 +61,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
             // title
             // [hh:mm:ss] + https ~
             String num = "[" + i +"번]";
-            embed.addField(num + " " + audioTrackInfo.title, CalcuTime.se2Time(audioTrackInfo.length) + audioTrackInfo.uri, false);
+            embed.addField(num + " " + audioTrackInfo.title, ParseTime.se2Time(audioTrackInfo.length) + audioTrackInfo.uri, false);
             i = i + 1;
         }
 

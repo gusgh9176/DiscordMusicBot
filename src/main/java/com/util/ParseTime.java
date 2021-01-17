@@ -1,10 +1,12 @@
 package com.util;
 
+import org.apache.log4j.Logger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class CalcuTime {
+public class ParseTime {
 
+    private static final Logger logger = Logger.getLogger(ParseTime.class);
     //
     // 3001 -> [00:50:01], 3665 -> [01:01:05]
     public static String se2Time(Long microSecond){
@@ -19,7 +21,8 @@ public class CalcuTime {
         try{
             returnTime = "[" + format.format(format.parse(result)) + "]";
         }catch (ParseException pe){
-            pe.printStackTrace();
+            logger.error(pe);
+            logger.error("Time Parsing error");
         }
         return returnTime;
     }
