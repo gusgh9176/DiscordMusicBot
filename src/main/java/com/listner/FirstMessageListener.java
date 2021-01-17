@@ -5,6 +5,7 @@ import com.audio.LavaplayerAudioSource;
 import com.audio.TrackScheduler;
 import com.sedmelluq.discord.lavaplayer.player.*;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.util.ParseTime;
 import org.apache.log4j.Logger;
@@ -106,7 +107,7 @@ public class FirstMessageListener implements MessageCreateListener {
                             });
 
                 }
-            }catch (NoSuchElementException nsee){
+            } catch (NoSuchElementException nsee) {
                 logger.error(nsee);
                 logger.error("User is not in VoiceChannel");
             }
@@ -139,11 +140,19 @@ public class FirstMessageListener implements MessageCreateListener {
         // print now play music
         else if (content[0].equalsIgnoreCase("!now")) {
             logger.info("User enter the !now");
-            AudioTrackInfo audioTrackInfo = player.getPlayingTrack().getInfo();
-            // Set embed
-            EmbedBuilder embed = new EmbedBuilder()
-                    .setTitle("Now Playing...")
-                    .setDescription(audioTrackInfo.title + " " + ParseTime.se2Time(audioTrackInfo.length));
+            AudioTrack audioTrack = player.getPlayingTrack();
+            AudioTrackInfo audioTrackInfo = null;
+            EmbedBuilder embed = new EmbedBuilder();
+
+            if (audioTrack != null) {
+                audioTrackInfo = audioTrack.getInfo();
+                embed.setTitle("Now Playing...")
+                        .setDescription(audioTrackInfo.title + " " + ParseTime.se2Time(audioTrackInfo.length));
+            }
+            else {
+                embed.setTitle("Not Playing")
+                        .setDescription("Not Playing now");
+            }
             textChannel.sendMessage(embed);
         }
 
@@ -168,10 +177,26 @@ public class FirstMessageListener implements MessageCreateListener {
                     embed.setDescription("현재 Volume: " + player.getVolume() + " (기본 값 15)");
                 }
                 textChannel.sendMessage(embed);
-            }catch (NumberFormatException nfe){
+            } catch (NumberFormatException nfe) {
                 logger.error(nfe);
                 logger.error("set volume error");
             }
+        }
+
+        // information command
+        else if (content[0].equalsIgnoreCase("!help")) {
+            logger.info("User enter the !help");
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setTitle("Help command")
+                    .setDescription("7 command information")
+                    .addField("!music MusicTitle", "Show list of music to add")
+                    .addField("!skip", "Skip the music currently playing")
+                    .addField("!now", "Show currently playing title")
+                    .addField("!volume", "Show currently music volume")
+                    .addField("!volume Number", "Set music volume")
+                    .addField("!dis", "Bot disconnects from channel")
+                    .addField("!help", "Show command information(Now)");
+            textChannel.sendMessage(embed);
         }
 
         // disconnect audio channel
