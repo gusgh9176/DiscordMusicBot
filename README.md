@@ -45,7 +45,7 @@ From creating bot accounts to executing commands
   - Fork this repositories
 
 - Option 2
-  - Clone this repo to your local machine using [https://github.com/gusgh9176/HowWriteReadMe.git](https://github.com/gusgh9176/DiscordMusicBot.git "https://github.com/gusgh9176/DiscordMusicBot.git")
+  - Clone this repo to your local machine using [https://github.com/gusgh9176/DiscordMusicBot.git](https://github.com/gusgh9176/DiscordMusicBot.git "https://github.com/gusgh9176/DiscordMusicBot.git")
   
 ### Step 2
 - Work Hard
