@@ -69,3 +69,6 @@ From creating bot accounts to executing commands
   
 - **Q: The bot doesn't respond to "!music" commands.**
   - A: The user who entered the command must be in a voice channel
+
+- **Q: How do you play music?**
+  - A: Enter !music and then enter the number you want music.
